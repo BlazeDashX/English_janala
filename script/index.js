@@ -2,9 +2,23 @@ const createElements = (arr) => {
     const htmlElements =arr.map((el) => `<span class="btn">${el}</span>`);
     return htmlElements.join(" ")
 
-}
+};
+
+const showSpinner = (status) => {
+    const spinner =document.getElementById("spinner")
+    const wordContainer =document.getElementById("word-container")
+    if(status){
+        spinner.classList.remove("hidden");
+        wordContainer.classList.add("hidden")
+    }
+    else{
+        spinner.classList.add("hidden")
+        wordContainer.classList.remove("hidden")
+    }
+};
 
 const loadLessons = () => {
+    showSpinner(true);
     fetch("https://openapi.programming-hero.com/api/levels/all") //promise of response
         .then((res) => res.json()) //promise of json data
         .then((json) => displayLessons(json.data));
@@ -15,9 +29,10 @@ const removeActive=()=>{
     lessonButtons.forEach((btn)=>{
         btn.classList.remove("active")
     })
-}
+};
 
 const loadLevelWords = (levelId) => {
+    showSpinner(true);
     const url = `https://openapi.programming-hero.com/api/level/${levelId}`;
     fetch(url)
         .then((res) => res.json())
@@ -28,14 +43,14 @@ const loadLevelWords = (levelId) => {
             displayLevelWords(data.data)
 
         });
-}
+};
 
 const loadWordDetail = async (id)=>{
     const url = `https://openapi.programming-hero.com/api/word/${id}`;
     const res = await fetch(url);
     const data = await res.json();
     displayWordDetail(data.data);
-}
+};
 
 const displayWordDetail = (word)=>{
     const detailsBox = document.getElementById("details-container")
@@ -60,7 +75,7 @@ const displayWordDetail = (word)=>{
     `
     document.getElementById("word_modal").showModal();
     
-}
+};
 
 const displayLevelWords =(words)=>{
     const wordContainer = document.getElementById("word-container")
@@ -74,6 +89,7 @@ const displayLevelWords =(words)=>{
             <h1 class="text-4xl font-semibold mt-2 font-bangla">নেক্সট Lesson এ যান</h1>
         </div> 
         `;
+        showSpinner(false);
         return
     }
 
@@ -93,7 +109,8 @@ const displayLevelWords =(words)=>{
         `;
         wordContainer.appendChild(wordDiv)
     });
-}
+    showSpinner(false);
+};
 
 const displayLessons = (lessons) => {
     // 1.get the container & empty
@@ -114,6 +131,7 @@ const displayLessons = (lessons) => {
         `
         container.appendChild(btnDiv)
     }
-}
+    showSpinner(false);
+};
 
 loadLessons();
